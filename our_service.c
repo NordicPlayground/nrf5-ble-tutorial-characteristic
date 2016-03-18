@@ -10,17 +10,6 @@
 void ble_our_service_on_ble_evt(ble_os_t * p_our_service, ble_evt_t * p_ble_evt)
 {
     // OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
-    switch (p_ble_evt->header.evt_id)
-    {
-        case BLE_GAP_EVT_CONNECTED:
-            p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-            break;
-        case BLE_GAP_EVT_DISCONNECTED:
-            p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
-        default:
-            // No implementation needed.
-            break;
-    }
 }
 
 /**@brief Function for adding our new characterstic to "Our service" that we initiated in the previous tutorial. 
@@ -81,7 +70,6 @@ void our_service_init(ble_os_t * p_our_service)
     APP_ERROR_CHECK(err_code);    
     
     // OUR_JOB: Step 3.B, Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
-    p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
 
     // FROM_SERVICE_TUTORIAL: Add our service
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY,
@@ -97,6 +85,6 @@ void our_service_init(ble_os_t * p_our_service)
 // ALREADY_DONE_FOR_YOU: Function to be called when updating characteristic value
 void our_termperature_characteristic_update(ble_os_t *p_our_service, int32_t *temperature_value)
 {
-    // OUR_JOB: Step 3.x, Update characteristic value
+    // OUR_JOB: Step 3.E, Update characteristic value
     
 }

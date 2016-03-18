@@ -84,8 +84,6 @@ static uint16_t                          m_conn_handle = BLE_CONN_HANDLE_INVALID
 ble_os_t m_our_service;
 
 // OUR_JOB: Step 3.G, Declare an app_timer id variable and define our timer interval and define a timer interval
-APP_TIMER_DEF(m_our_char_timer_id);
-#define OUR_CHAR_TIMER_INTERVAL     APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER) // 1000 ms intervals
 
 static ble_uuid_t       m_adv_uuids[] = {{BLE_UUID_OUR_SERVICE_UUID, BLE_UUID_TYPE_VENDOR_BEGIN}}; 
                                    
@@ -109,11 +107,7 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 // ALREADY_DONE_FOR_YOU: This is a timer event handler
 static void timer_timeout_handler(void * p_context)
 {
-    // OUR_JOB: Step 3.x, Update temperature and characteristic value.
-    int32_t temperature = 0;    // Declare variable holding temperature value
-    sd_temp_get(&temperature); // Get temperature
-    our_termperature_characteristic_update(&m_our_service, &temperature);
-    nrf_gpio_pin_toggle(LED_4);
+    // OUR_JOB: Step 3.F, Update temperature and characteristic value.
 }
 
 
@@ -128,7 +122,6 @@ static void timers_init(void)
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
     // OUR_JOB: Step 3.H, Initiate our timer
-    app_timer_create(&m_our_char_timer_id, APP_TIMER_MODE_REPEATED, timer_timeout_handler);
 }
 
 
@@ -229,8 +222,7 @@ static void conn_params_init(void)
 */
 static void application_timers_start(void)
 {
-    // OUR_JOB: Step 3.x, Start our timer
-//    app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
+    // OUR_JOB: Step 3.I, Start our timer
 }
 
 
@@ -292,16 +284,10 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-        
-            // When connected; start our timer to start regular temperature measurements
-            app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
-        
-            // When disconnected; stop our timer to stop temperature measurements
-            app_timer_stop(m_our_char_timer_id);
             break;
 
         default:
@@ -326,7 +312,6 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     // OUR_JOB: Step 3.C, Call ble_our_service_on_ble_evt() to do housekeeping of ble connections related to our service and characteristic
-    ble_our_service_on_ble_evt(&m_our_service, p_ble_evt);
 }
 
 
