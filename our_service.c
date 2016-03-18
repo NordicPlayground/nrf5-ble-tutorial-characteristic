@@ -1,37 +1,3 @@
-/* Copyright (c) Nordic Semiconductor ASA
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- * 
- *   1. Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * 
- *   2. Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer in the documentation and/or
- *   other materials provided with the distribution.
- * 
- *   3. Neither the name of Nordic Semiconductor ASA nor the names of other
- *   contributors to this software may be used to endorse or promote products
- *   derived from this software without specific prior written permission.
- * 
- *   4. This software must only be used in a processor manufactured by Nordic
- *   Semiconductor ASA, or in a processor manufactured by a third party that
- *   is used in combination with a processor manufactured by Nordic Semiconductor.
- * 
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- */
 
 #include <stdint.h>
 #include <string.h>
@@ -67,57 +33,35 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
     uint32_t   err_code = 0; // Variable to hold return codes from library and softdevice functions
     
     // OUR_JOB: Step 2.A, Add a custom characteristic UUID
-    ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = BLE_UUID_OUR_BASE_UUID;
-    char_uuid.uuid = BLE_UUID_OUR_CHARACTERISTC_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);   
     
     // OUR_JOB: Step 2.F Add read/write properties to our characteristic
     ble_gatts_char_md_t char_md;
     memset(&char_md, 0, sizeof(char_md));
-    char_md.char_props.read = 1;
-    char_md.char_props.write = 1;
+
     
     // OUR_JOB: Step 3.A, Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure
     ble_gatts_attr_md_t cccd_md;
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
-    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
-    char_md.p_cccd_md           = &cccd_md;
-    char_md.char_props.notify   = 1;
-    
+    memset(&cccd_md, 0, sizeof(cccd_md));
+   
     
     // OUR_JOB: Step 2.B, Configure the attribute metadata
     ble_gatts_attr_md_t attr_md;
-    memset(&attr_md, 0, sizeof(attr_md));
-    attr_md.vloc = BLE_GATTS_VLOC_STACK;    
+    memset(&attr_md, 0, sizeof(attr_md));    
     
     
     // OUR_JOB: Step 2.G, Set read/write security levels to our characteristic
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
     
     
-    // OUR_JOB: Step 2.C, Configure the characteristic value attributes
+    // OUR_JOB: Step 2.C, Configure the characteristic value attribute
     ble_gatts_attr_t    attr_char_value;
     memset(&attr_char_value, 0, sizeof(attr_char_value));
-    attr_char_value.p_uuid      = &char_uuid;
-    attr_char_value.p_attr_md   = &attr_md;
-    
     
     // OUR_JOB: Step 2.H, Set characteristic length in number of bytes
-    attr_char_value.max_len     = 4;
-    attr_char_value.init_len    = 4;
-    uint8_t value[4]            = {0x12,0x34,0x56,0x78};
-    attr_char_value.p_value     = value;
 
     // OUR_JOB: Step 2.E, Add our new characteristic to the service
-    err_code = sd_ble_gatts_characteristic_add(p_our_service->service_handle,
-                                       &char_md,
-                                       &attr_char_value,
-                                       &p_our_service->char_handles);
-    APP_ERROR_CHECK(err_code);   
+
 
     return NRF_SUCCESS;
 }
@@ -150,7 +94,7 @@ void our_service_init(ble_os_t * p_our_service)
     APP_ERROR_CHECK(err_code);
     
     // OUR_JOB: Call the function our_char_add() to add our new characteristic to the service. 
-    our_char_add(p_our_service);
+    //our_char_add(p_our_service);
 }
 
 // ALREADY_DONE_FOR_YOU: Function to be called when updating characteristic value

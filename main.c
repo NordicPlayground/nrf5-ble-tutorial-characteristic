@@ -86,7 +86,6 @@ ble_os_t m_our_service;
 // OUR_JOB: Step 3.G, Declare an app_timer id variable and define our timer interval and define a timer interval
 APP_TIMER_DEF(m_our_char_timer_id);
 #define OUR_CHAR_TIMER_INTERVAL     APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER) // 1000 ms intervals
-
                                    
 /**@brief Callback function for asserts in the SoftDevice.
  *
@@ -477,18 +476,19 @@ static void advertising_init(void)
     uint32_t      err_code;
     ble_advdata_t advdata;
 
-    // Build advertising data struct to pass into @ref ble_advertising_init.
+    // Build advertising data struct to pass into ble_advertising_init().
     memset(&advdata, 0, sizeof(advdata));
 
     advdata.name_type               = BLE_ADVDATA_FULL_NAME;
-    advdata.include_appearance      = true;
     advdata.flags                   = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
 
     ble_adv_modes_config_t options = {0};
     options.ble_adv_fast_enabled  = BLE_ADV_FAST_ENABLED;
     options.ble_adv_fast_interval = APP_ADV_INTERVAL;
     options.ble_adv_fast_timeout  = APP_ADV_TIMEOUT_IN_SECONDS;
-    
+
+    // OUR_JOB: Create a scan response packet and include the list of UUIDs 
+
     err_code = ble_advertising_init(&advdata, NULL, &options, on_adv_evt, NULL);
     APP_ERROR_CHECK(err_code);
 }
@@ -536,8 +536,8 @@ int main(void)
     ble_stack_init();
     device_manager_init(erase_bonds);
     gap_params_init();
-    advertising_init();
     services_init();
+    advertising_init();
     conn_params_init();
 
     // Start execution.
