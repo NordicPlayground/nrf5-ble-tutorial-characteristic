@@ -22,6 +22,7 @@ typedef struct
     uint16_t                    conn_handle;    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection).*/
     uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */
     // OUR_JOB: Step 2.D, Add handles for the characteristic attributes to our struct
+    ble_gatts_char_handles_t    char_handles;
 }ble_os_t;
 
 /**@brief Function for handling BLE Stack events related to our service and characteristic.
