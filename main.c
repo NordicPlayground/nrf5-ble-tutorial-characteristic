@@ -109,9 +109,20 @@ static void timer_timeout_handler(void * p_context)
 {
     // OUR_JOB: Step 3.F, Update temperature and characteristic value.
     int32_t temperature = 0;    // Declare variable holding temperature value
+    static int32_t previous_temperature = 0; // Declare a variable to store current temperature until next measurement.
+    
     sd_temp_get(&temperature); // Get temperature
-    our_termperature_characteristic_update(&m_our_service, &temperature);
-    nrf_gpio_pin_toggle(LED_4);
+    
+    // Check if current temperature is different from last temperature
+    if(temperature != previous_temperature)
+    {
+        // If new temperature then send notification
+        our_termperature_characteristic_update(&m_our_service, &temperature);
+        nrf_gpio_pin_toggle(LED_4);
+    }
+    
+    // Save current temperature until next measurement
+    previous_temperature = temperature;
 }
 
 
