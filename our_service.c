@@ -50,8 +50,6 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
     
     
     // OUR_JOB: Step 2.G, Set read/write security levels to our characteristic
-    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
     
     
     // OUR_JOB: Step 2.C, Configure the characteristic value attribute
@@ -61,7 +59,6 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
     // OUR_JOB: Step 2.H, Set characteristic length in number of bytes
 
     // OUR_JOB: Step 2.E, Add our new characteristic to the service
-
 
     return NRF_SUCCESS;
 }
@@ -94,38 +91,12 @@ void our_service_init(ble_os_t * p_our_service)
     APP_ERROR_CHECK(err_code);
     
     // OUR_JOB: Call the function our_char_add() to add our new characteristic to the service. 
-    //our_char_add(p_our_service);
+    our_char_add(p_our_service);
 }
 
 // ALREADY_DONE_FOR_YOU: Function to be called when updating characteristic value
 void our_termperature_characteristic_update(ble_os_t *p_our_service, int32_t *temperature_value)
 {
     // OUR_JOB: Step 3.x, Update characteristic value
-    
-    // Decleare variable to hold previous temperature value 
-    static int32_t previous_temperature_value = 0;
-    
-    // If new temperature value is different from previous value then send notification
-    if(*temperature_value != previous_temperature_value )
-    {
-        // Send value if connected and notifying
-        if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)
-        {
-            uint16_t               len = 4;
-            ble_gatts_hvx_params_t hvx_params;
-            memset(&hvx_params, 0, sizeof(hvx_params));
-
-            hvx_params.handle = p_our_service->char_handles.value_handle;
-            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-            hvx_params.offset = 0;
-            hvx_params.p_len  = &len;
-            hvx_params.p_data = (uint8_t*)temperature_value;  
-
-            sd_ble_gatts_hvx(p_our_service->conn_handle, &hvx_params);
-        }  
-    }   
-    
-    // Store current temperature value until next updated. 
-    previous_temperature_value = *temperature_value;
     
 }
