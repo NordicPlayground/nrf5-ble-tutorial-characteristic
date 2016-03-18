@@ -118,11 +118,11 @@ static void timer_timeout_handler(void * p_context)
     {
         // If new temperature then send notification
         our_termperature_characteristic_update(&m_our_service, &temperature);
-        nrf_gpio_pin_toggle(LED_4);
     }
     
     // Save current temperature until next measurement
     previous_temperature = temperature;
+    nrf_gpio_pin_toggle(LED_4);
 }
 
 
@@ -239,7 +239,7 @@ static void conn_params_init(void)
 static void application_timers_start(void)
 {
     // OUR_JOB: Step 3.I, Start our timer
-    app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
+    // To update temperature only when in a connection then don't call app_timer_start() here, but in on_ble_evt().
 }
 
 
