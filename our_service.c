@@ -49,6 +49,11 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
     // OUR_JOB: Step 3.A, Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure
     ble_gatts_attr_md_t cccd_md;
     memset(&cccd_md, 0, sizeof(cccd_md));
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
+    char_md.p_cccd_md           = &cccd_md;
+    char_md.char_props.notify   = 1;
    
     
     // OUR_JOB: Step 2.B, Configure the attribute metadata
@@ -58,8 +63,8 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
     
     
     // OUR_JOB: Step 2.G, Set read/write security levels to our characteristic
-    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
-    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
     
     
     // OUR_JOB: Step 2.C, Configure the characteristic value attribute
@@ -69,6 +74,10 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
     attr_char_value.p_attr_md   = &attr_md;
     
     // OUR_JOB: Step 2.H, Set characteristic length in number of bytes
+    attr_char_value.max_len     = 4;
+    attr_char_value.init_len    = 4;
+    uint8_t value[4]            = {0x12,0x34,0x56,0x78};
+    attr_char_value.p_value     = value;
 
     // OUR_JOB: Step 2.E, Add our new characteristic to the service
     err_code = sd_ble_gatts_characteristic_add(p_our_service->service_handle,
@@ -114,32 +123,19 @@ void our_service_init(ble_os_t * p_our_service)
 // ALREADY_DONE_FOR_YOU: Function to be called when updating characteristic value
 void our_termperature_characteristic_update(ble_os_t *p_our_service, int32_t *temperature_value)
 {
-    // OUR_JOB: Step 3.x, Update characteristic value
-    
-    // Decleare variable to hold previous temperature value 
-    static int32_t previous_temperature_value = 0;
-    
-    // If new temperature value is different from previous value then send notification
-    if(*temperature_value != previous_temperature_value )
+    // OUR_JOB: Step 3.E, Update characteristic value
+    if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)
     {
-        // Send value if connected and notifying
-        if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)
-        {
-            uint16_t               len = 4;
-            ble_gatts_hvx_params_t hvx_params;
-            memset(&hvx_params, 0, sizeof(hvx_params));
+        uint16_t               len = 4;
+        ble_gatts_hvx_params_t hvx_params;
+        memset(&hvx_params, 0, sizeof(hvx_params));
 
-            hvx_params.handle = p_our_service->char_handles.value_handle;
-            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-            hvx_params.offset = 0;
-            hvx_params.p_len  = &len;
-            hvx_params.p_data = (uint8_t*)temperature_value;  
+        hvx_params.handle = p_our_service->char_handles.value_handle;
+        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+        hvx_params.offset = 0;
+        hvx_params.p_len  = &len;
+        hvx_params.p_data = (uint8_t*)temperature_value;  
 
-            sd_ble_gatts_hvx(p_our_service->conn_handle, &hvx_params);
-        }  
+        sd_ble_gatts_hvx(p_our_service->conn_handle, &hvx_params);
     }   
-    
-    // Store current temperature value until next updated. 
-    previous_temperature_value = *temperature_value;
-    
 }

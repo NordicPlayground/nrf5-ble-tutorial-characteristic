@@ -107,7 +107,7 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 // ALREADY_DONE_FOR_YOU: This is a timer event handler
 static void timer_timeout_handler(void * p_context)
 {
-    // OUR_JOB: Step 3.x, Update temperature and characteristic value.
+    // OUR_JOB: Step 3.F, Update temperature and characteristic value.
     int32_t temperature = 0;    // Declare variable holding temperature value
     sd_temp_get(&temperature); // Get temperature
     our_termperature_characteristic_update(&m_our_service, &temperature);
@@ -227,8 +227,8 @@ static void conn_params_init(void)
 */
 static void application_timers_start(void)
 {
-    // OUR_JOB: Step 3.x, Start our timer
-//    app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
+    // OUR_JOB: Step 3.I, Start our timer
+    app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
 }
 
 
