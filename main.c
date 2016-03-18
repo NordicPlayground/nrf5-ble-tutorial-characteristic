@@ -1,28 +1,3 @@
-/* Copyright (c) 2014 Nordic Semiconductor. All Rights Reserved.
- *
- * The information contained herein is property of Nordic Semiconductor ASA.
- * Terms and conditions of usage are described in detail in NORDIC
- * SEMICONDUCTOR STANDARD SOFTWARE LICENSE AGREEMENT.
- *
- * Licensees are granted free, non-transferable use of the information. NO
- * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
- * the file.
- *
- */
-
-/** @file
- *
- * @defgroup ble_sdk_app_template_main main.c
- * @{
- * @ingroup ble_sdk_app_template
- * @brief Template project main file.
- *
- * This file contains a template for creating a new application. It has the code necessary to wakeup
- * from button, advertise, get a connection restart advertising on disconnect and if no new
- * connection created go back to system-off mode.
- * It can easily be used as a starting point for creating a new application, the comments identified
- * with 'YOUR_JOB' indicates where and how you can customize.
- */
 
 #include <stdint.h>
 #include <string.h>
@@ -51,7 +26,6 @@
 #define PERIPHERAL_LINK_COUNT            1                                          /**<number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 
 #define DEVICE_NAME                      "OurCharacteristic"                          /**< Name of device. Will be included in the advertising data. */
-#define MANUFACTURER_NAME                "NordicSemiconductor"                      /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                 300                                        /**< The advertising interval (in units of 0.625 ms. This value corresponds to 25 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS       180                                        /**< The advertising timeout in units of seconds. */
 
@@ -84,8 +58,8 @@ static uint16_t                          m_conn_handle = BLE_CONN_HANDLE_INVALID
 ble_os_t m_our_service;
 
 // OUR_JOB: Step 3.G, Declare an app_timer id variable and define our timer interval and define a timer interval
-APP_TIMER_DEF(m_our_char_timer_id);
-#define OUR_CHAR_TIMER_INTERVAL     APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER) // 1000 ms intervals
+
+static ble_uuid_t       m_adv_uuids[] = {{BLE_UUID_OUR_SERVICE_UUID, BLE_UUID_TYPE_VENDOR_BEGIN}}; 
                                    
 /**@brief Callback function for asserts in the SoftDevice.
  *
@@ -108,10 +82,6 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 static void timer_timeout_handler(void * p_context)
 {
     // OUR_JOB: Step 3.F, Update temperature and characteristic value.
-    int32_t temperature = 0;    // Declare variable holding temperature value
-    sd_temp_get(&temperature); // Get temperature
-    our_termperature_characteristic_update(&m_our_service, &temperature);
-    nrf_gpio_pin_toggle(LED_4);
 }
 
 
@@ -126,7 +96,6 @@ static void timers_init(void)
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
     // OUR_JOB: Step 3.H, Initiate our timer
-    app_timer_create(&m_our_char_timer_id, APP_TIMER_MODE_REPEATED, timer_timeout_handler);
 }
 
 
@@ -228,7 +197,6 @@ static void conn_params_init(void)
 static void application_timers_start(void)
 {
     // OUR_JOB: Step 3.I, Start our timer
-    app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
 }
 
 
@@ -290,16 +258,10 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-        
-            // When connected; start our timer to start regular temperature measurements
-            app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
-        
-            // When disconnected; stop our timer to stop temperature measurements
-            app_timer_stop(m_our_char_timer_id);
             break;
 
         default:
@@ -324,7 +286,6 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     // OUR_JOB: Step 3.C, Call ble_our_service_on_ble_evt() to do housekeeping of ble connections related to our service and characteristic
-    ble_our_service_on_ble_evt(&m_our_service, p_ble_evt);
 }
 
 
@@ -489,7 +450,12 @@ static void advertising_init(void)
 
     // OUR_JOB: Create a scan response packet and include the list of UUIDs 
 
-    err_code = ble_advertising_init(&advdata, NULL, &options, on_adv_evt, NULL);
+    ble_advdata_t srdata;
+    memset(&srdata, 0, sizeof(srdata));
+    srdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
+    srdata.uuids_complete.p_uuids = m_adv_uuids;
+
+    err_code = ble_advertising_init(&advdata, &srdata, &options, on_adv_evt, NULL);
     APP_ERROR_CHECK(err_code);
 }
 
