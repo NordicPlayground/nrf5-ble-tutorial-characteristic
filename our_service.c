@@ -85,6 +85,10 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
                                        &attr_char_value,
                                        &p_our_service->char_handles);
     APP_ERROR_CHECK(err_code);
+    
+    printf("Service handle: %d\n\r", p_our_service->service_handle);
+    printf("Char value handle: %d\r\n", p_our_service->char_handles.value_handle);
+    printf("Char cccd handle: %d\r\n", p_our_service->char_handles.cccd_handle);
 
     return NRF_SUCCESS;
 }

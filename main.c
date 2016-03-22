@@ -44,6 +44,11 @@
 #include "bsp.h"
 #include "bsp_btn_ble.h"
 #include "our_service.h"
+#include "app_uart.h"
+
+/*UART buffer size. */
+#define UART_TX_BUF_SIZE 256
+#define UART_RX_BUF_SIZE 1
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT  1                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
@@ -533,6 +538,54 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
+/**
+ * @brief UART events handler.
+ */
+static void uart_events_handler(app_uart_evt_t * p_event)
+{
+    switch (p_event->evt_type)
+    {
+        case APP_UART_COMMUNICATION_ERROR:
+            APP_ERROR_HANDLER(p_event->data.error_communication);
+            break;
+
+        case APP_UART_FIFO_ERROR:
+            APP_ERROR_HANDLER(p_event->data.error_code);
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+/**
+ * @brief UART initialization.
+ * Just the usual way. Nothing special here
+ */
+static void uart_config(void)
+{
+    uint32_t                     err_code;
+    const app_uart_comm_params_t comm_params =
+    {
+        RX_PIN_NUMBER,
+        TX_PIN_NUMBER,
+        RTS_PIN_NUMBER,
+        CTS_PIN_NUMBER,
+        APP_UART_FLOW_CONTROL_DISABLED,
+        false,
+        UART_BAUDRATE_BAUDRATE_Baud38400
+    };
+
+    APP_UART_FIFO_INIT(&comm_params,
+                       UART_RX_BUF_SIZE,
+                       UART_TX_BUF_SIZE,
+                       uart_events_handler,
+                       APP_IRQ_PRIORITY_LOW,
+                       err_code);
+
+    APP_ERROR_CHECK(err_code);
+}
 
 /**@brief Function for application main entry.
  */
@@ -540,6 +593,9 @@ int main(void)
 {   
     uint32_t err_code;
     bool erase_bonds;
+    
+    uart_config();
+    printf("\033[2J\033[;HCharacteristic Tutorial, Completed Code\r\n");
 
     // Initialize.
     timers_init();
