@@ -22,6 +22,7 @@ void ble_our_service_on_ble_evt(ble_os_t * p_our_service, ble_evt_t * p_ble_evt)
             break;
         case BLE_GAP_EVT_DISCONNECTED:
             p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
+            break;
         default:
             // No implementation needed.
             break;
