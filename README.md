@@ -5,8 +5,8 @@ This example is meant to be used togheter with the tutorial "BLE Characteristics
 
 * nRF51 DK or nRF52 DK Kit
 * nRF51 Dongle
-* Keil v5.12 or later
 * Master Control Panel (MCP). You can also use the Master Control Panel found in the nRF Toolbox app for Android or the LightBlue app for iPhone.
+* Keil v5.12 or later
 * nRFgo Studio
 * SDK v11.0.0.
 * For nRF51 DK use SoftDevice S130 V2.0.0 for nRF52 DK use S132 V2.0.0.
