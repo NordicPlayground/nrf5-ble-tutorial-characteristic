@@ -9,14 +9,9 @@
 // ALREADY_DONE_FOR_YOU: Declaration of a function that will take care of some housekeeping of ble connections related to our service and characteristic
 void ble_our_service_on_ble_evt(ble_os_t * p_our_service, ble_evt_t * p_ble_evt)
 {
-    uint32_t * received_data;
     // OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
     switch (p_ble_evt->header.evt_id)
     {
-        case BLE_GATTS_EVT_WRITE: // On data received print the data 
-            received_data = (uint32_t*)p_ble_evt->evt.gatts_evt.params.write.data; // The data is received as array of uint8_t. In this example we transmit 4 bytes and hence cast to uint32_t 
-            printf("GATTS evt write: %#x\r\n", *received_data); // The data will be stored in uint32_t and printed Least significant byte first of reasons explained here https://devzone.nordicsemi.com/question/72312/.
-            break;
         case BLE_GAP_EVT_CONNECTED:
             p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
