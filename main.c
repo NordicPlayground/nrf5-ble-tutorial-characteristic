@@ -79,10 +79,10 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 
 
 // ALREADY_DONE_FOR_YOU: This is a timer event handler
-static void timer_timeout_handler(void * p_context)
-{
-    // OUR_JOB: Step 3.F, Update temperature and characteristic value.
-}
+//static void timer_timeout_handler(void * p_context)
+//{
+//    // OUR_JOB: Step 3.F, Update temperature and characteristic value.
+//}
 
 
 /**@brief Function for the Timer initialization.

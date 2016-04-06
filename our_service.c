@@ -19,8 +19,6 @@ void ble_our_service_on_ble_evt(ble_os_t * p_our_service, ble_evt_t * p_ble_evt)
  */
 static uint32_t our_char_add(ble_os_t * p_our_service)
 {
-    uint32_t   err_code = 0; // Variable to hold return codes from library and softdevice functions
-    
     // OUR_JOB: Step 2.A, Add a custom characteristic UUID
     
     // OUR_JOB: Step 2.F Add read/write properties to our characteristic
