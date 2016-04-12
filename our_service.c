@@ -6,12 +6,61 @@
 #include "ble_srv_common.h"
 #include "app_error.h"
 
+/**@brief Function for handling BLE GATTS EVENTS
+ * 
+ * This function prints out data that is received when you try to write to your characteristic or CCCD. 
+ * In general it is a bad idea to to so much printf stuff and UART transfer inside the BLE handler,
+ * but this is just for demonstrate purposes.
+ *
+ * @param[in]   p_our_service        Our Service structure.
+ * @param[in]   p_ble_evt            BLE event passed from BLE stack
+ *
+ */
+static void on_ble_write(ble_os_t * p_our_service, ble_evt_t * p_ble_evt)
+{
+    // Decclare buffer variable to hold received data. The data can only be 32 bit long.
+    uint32_t data_buffer;
+    // Pupulate ble_gatts_value_t structure to hold received data and metadata.
+    ble_gatts_value_t rx_data;
+    rx_data.len = sizeof(uint32_t);
+    rx_data.offset = 0;
+    rx_data.p_value = (uint8_t*)&data_buffer;
+    
+    // Check if write event is performed on our characteristic or the CCCD
+    if(p_ble_evt->evt.gatts_evt.params.write.handle == p_our_service->char_handles.value_handle)
+    {
+        // Get data
+        sd_ble_gatts_value_get(p_our_service->conn_handle, p_our_service->char_handles.value_handle, &rx_data);
+        // Print handle and value 
+        printf("Value received on handle %#06x: %#010x\r\n", p_ble_evt->evt.gatts_evt.params.write.handle, data_buffer);
+    }
+    else if(p_ble_evt->evt.gatts_evt.params.write.handle == p_our_service->char_handles.cccd_handle)
+    {
+        // Get data
+        sd_ble_gatts_value_get(p_our_service->conn_handle, p_our_service->char_handles.cccd_handle, &rx_data);
+        // Print handle and value 
+        printf("Value received on handle %#06x: %#06x\r\n", p_ble_evt->evt.gatts_evt.params.write.handle, data_buffer);
+        if(data_buffer == 0x0001)
+        {
+            printf("Notification enabled\r\n");
+        }
+        else if(data_buffer == 0x0000)
+        {
+            printf("Notification disabled\r\n");
+        }
+    }
+}
+
 // ALREADY_DONE_FOR_YOU: Declaration of a function that will take care of some housekeeping of ble connections related to our service and characteristic
 void ble_our_service_on_ble_evt(ble_os_t * p_our_service, ble_evt_t * p_ble_evt)
 {
+
     // OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
     switch (p_ble_evt->header.evt_id)
-    {
+    {        
+        case BLE_GATTS_EVT_WRITE:
+            on_ble_write(p_our_service, p_ble_evt);
+            break;
         case BLE_GAP_EVT_CONNECTED:
             p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
@@ -87,9 +136,9 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
                                        &p_our_service->char_handles);
     APP_ERROR_CHECK(err_code);
     
-    printf("Service handle: %d\n\r", p_our_service->service_handle);
-    printf("Char value handle: %d\r\n", p_our_service->char_handles.value_handle);
-    printf("Char cccd handle: %d\r\n", p_our_service->char_handles.cccd_handle);
+    printf("\r\nService handle: %#x\n\r", p_our_service->service_handle);
+    printf("Char value handle: %#x\r\n", p_our_service->char_handles.value_handle);
+    printf("Char cccd handle: %#x\r\n\r\n", p_our_service->char_handles.cccd_handle);
 
     return NRF_SUCCESS;
 }
