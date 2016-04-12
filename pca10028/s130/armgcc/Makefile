@@ -51,7 +51,8 @@ $(abspath ../../../../../../components/libraries/sensorsim/sensorsim.c) \
 $(abspath ../../../../../../external/segger_rtt/RTT_Syscalls_GCC.c) \
 $(abspath ../../../../../../external/segger_rtt/SEGGER_RTT.c) \
 $(abspath ../../../../../../external/segger_rtt/SEGGER_RTT_printf.c) \
-$(abspath ../../../../../../components/libraries/uart/app_uart.c) \
+$(abspath ../../../../../../components/libraries/fifo/app_fifo.c) \
+$(abspath ../../../../../../components/libraries/uart/app_uart_fifo.c) \
 $(abspath ../../../../../../components/drivers_nrf/delay/nrf_delay.c) \
 $(abspath ../../../../../../components/drivers_nrf/common/nrf_drv_common.c) \
 $(abspath ../../../../../../components/drivers_nrf/gpiote/nrf_drv_gpiote.c) \
@@ -87,6 +88,7 @@ INC_PATHS += -I$(abspath ../../../../../../components/ble/common)
 INC_PATHS += -I$(abspath ../../../../../../components/libraries/sensorsim)
 INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/pstorage)
 INC_PATHS += -I$(abspath ../../../../../../components/libraries/uart)
+INC_PATHS += -I$(abspath ../../../../../../components/libraries/fifo)
 INC_PATHS += -I$(abspath ../../../../../../components/device)
 INC_PATHS += -I$(abspath ../../../../../../components/libraries/button)
 INC_PATHS += -I$(abspath ../../../../../../components/libraries/fstorage)
