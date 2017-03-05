@@ -9,7 +9,7 @@
 /**@brief Function for handling BLE GATTS EVENTS
  * 
  * This function prints out data that is received when you try to write to your characteristic or CCCD. 
- * In general it is a bad idea to to so much printf stuff and UART transfer inside the BLE handler,
+ * In general it is a bad idea to do so much printf stuff and UART transfer inside the BLE handler,
  * but this is just for demonstrate purposes.
  *
  * @param[in]   p_our_service        Our Service structure.
@@ -18,9 +18,9 @@
  */
 static void on_ble_write(ble_os_t * p_our_service, ble_evt_t * p_ble_evt)
 {
-    // Decclare buffer variable to hold received data. The data can only be 32 bit long.
+    // Declare buffer variable to hold received data. The data can only be 32 bit long.
     uint32_t data_buffer;
-    // Pupulate ble_gatts_value_t structure to hold received data and metadata.
+    // Populate ble_gatts_value_t structure to hold received data and metadata.
     ble_gatts_value_t rx_data;
     rx_data.len = sizeof(uint32_t);
     rx_data.offset = 0;
