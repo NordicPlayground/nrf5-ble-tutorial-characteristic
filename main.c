@@ -122,7 +122,7 @@ static void timer_timeout_handler(void * p_context)
     if(temperature != previous_temperature)
     {
         // If new temperature then send notification
-        our_termperature_characteristic_update(&m_our_service, &temperature);
+        our_temperature_characteristic_update(&m_our_service, &temperature);
     }
     
     // Save current temperature until next measurement
