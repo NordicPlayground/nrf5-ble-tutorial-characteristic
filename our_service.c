@@ -123,7 +123,7 @@ void our_service_init(ble_os_t * p_our_service)
 }
 
 // ALREADY_DONE_FOR_YOU: Function to be called when updating characteristic value
-void our_termperature_characteristic_update(ble_os_t *p_our_service, int32_t *temperature_value)
+void our_temperature_characteristic_update(ble_os_t *p_our_service, int32_t *temperature_value)
 {
     // OUR_JOB: Step 3.E, Update characteristic value
 		if (p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID)

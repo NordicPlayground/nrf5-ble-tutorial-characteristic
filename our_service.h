@@ -47,6 +47,6 @@ void our_service_init(ble_os_t * p_our_service);
  * @param[in]   p_our_service                     Our Service structure.
  * @param[in]   characteristic_value     New characteristic value.
  */
-void our_termperature_characteristic_update(ble_os_t *p_our_service, int32_t *temperature_value);
+void our_temperature_characteristic_update(ble_os_t *p_our_service, int32_t *temperature_value);
 
 #endif  /* _ OUR_SERVICE_H__ */
