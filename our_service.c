@@ -87,7 +87,6 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
                                    &attr_char_value,
                                    &p_our_service->char_handles);
 		APP_ERROR_CHECK(err_code);
-
     return NRF_SUCCESS;
 }
 

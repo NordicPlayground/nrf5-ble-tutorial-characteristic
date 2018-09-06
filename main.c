@@ -789,7 +789,7 @@ int main(void)
     peer_manager_init();
 
     // Start execution.
-    NRF_LOG_INFO("Template example started.");
+    NRF_LOG_INFO("OurCharacteristics tutorial started.");
     application_timers_start();
 
     advertising_start(erase_bonds);
