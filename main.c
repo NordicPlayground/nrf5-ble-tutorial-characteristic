@@ -113,8 +113,7 @@ ble_os_t m_our_service;
 
 
 // OUR_JOB: Step 3.G, Declare an app_timer id variable and define our timer interval and define a timer interval
-APP_TIMER_DEF(m_our_char_timer_id);
-#define OUR_CHAR_TIMER_INTERVAL APP_TIMER_TICKS(1000) //1000 ms intervals
+
 
 
 
@@ -147,27 +146,11 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 
 
 // ALREADY_DONE_FOR_YOU: This is a timer event handler
-static void timer_timeout_handler(void * p_context)
+/* static void timer_timeout_handler(void * p_context)
 {
     // OUR_JOB: Step 3.F, Update temperature and characteristic value.
-		int32_t temperature = 0;      //Declare a variable holding temperature value
-                static int32_t previous_temperature=0;      //Declare a variable to store current temperature until next measurement. 
-
-		sd_temp_get(&temperature);    //Get temperature
-                
-
-                // Check if current temperature is different from last temperature
-                if(temperature != previous_temperature)
-                    {
-                      // If new temperature then send notification
-                      our_temperature_characteristic_update(&m_our_service, &temperature);
-                    }
-                
-                // Save current temperature until next measurement
-                previous_temperature = temperature;
-		nrf_gpio_pin_toggle(LED_4);
 }
-
+ */
 
 
 /**@brief Function for handling Peer Manager events.
@@ -280,7 +263,6 @@ static void timers_init(void)
 
 
     // OUR_JOB: Step 3.H, Initiate our timer
-    app_timer_create(&m_our_char_timer_id, APP_TIMER_MODE_REPEATED, timer_timeout_handler);
 
 }
 
@@ -344,7 +326,7 @@ static void services_init(void)
 {
 
 	
-		uint32_t         err_code;
+	uint32_t         err_code;
     nrf_ble_qwr_init_t qwr_init = {0};
 
     // Initialize Queued Write Module.
@@ -420,9 +402,7 @@ static void application_timers_start(void)
 {
 
     // OUR_JOB: Step 3.I, Start our timer
-    //app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
-    
-    //To update temperature only when in a connection then don't call app_timer_start() here, but in on_ble_evt()
+
 }
 
 
@@ -502,8 +482,6 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             err_code = nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);
 
-            //When connected; start our timer to start regular temperature measurements
-            app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
             break;
 
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
@@ -568,7 +546,7 @@ static void ble_stack_init(void)
     NRF_SDH_BLE_OBSERVER(m_ble_observer, APP_BLE_OBSERVER_PRIO, ble_evt_handler, NULL);
 
     //OUR_JOB: Step 3.C Call ble_our_service_on_ble_evt() to do housekeeping of ble connections related to our service and characteristics
-    NRF_SDH_BLE_OBSERVER(m_our_service_observer, APP_BLE_OBSERVER_PRIO, ble_our_service_on_ble_evt, (void*) &m_our_service);
+
 	
 		
 
