@@ -3,13 +3,12 @@ This example is meant to be used togheter with the tutorial "BLE Characteristics
 
 # Requirements
 
-* nRF51 DK or nRF52 DK Kit
-* nRF51 Dongle
-* Master Control Panel (MCP). You can also use the Master Control Panel found in the nRF Toolbox app for Android or the LightBlue app for iPhone.
-* Keil v5.12 or later
-* nRFgo Studio
-* SDK v11.0.0.
-* For nRF51 DK use SoftDevice S130 V2.0.0 for nRF52 DK use S132 V2.0.0.
+* nRF52 DK
+* nRF52840 Dongle or an additional development kit
+* nRF Connect Bluetooth low energy app for Desktop. You can also use nRF Connect for mobile found in both Google Play on Android and App Store for iPhone.
+* Keil uVision v5.xx or SEGGER Embedded Studio (SES)
+* SDK v15.0.0.
+* SoftDevice S132 V6.x.x
 * Example files.
 
 Other kits, dongles and software versions might work as well, but this will not be covered here.
