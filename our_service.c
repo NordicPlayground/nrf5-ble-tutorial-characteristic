@@ -9,7 +9,10 @@
 // ALREADY_DONE_FOR_YOU: Declaration of a function that will take care of some housekeeping of ble connections related to our service and characteristic
 void ble_our_service_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context)
 {
-    // OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
+  	ble_os_t * p_our_service =(ble_os_t *) p_context;  
+		// OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
+	
+	
 }
 
 /**@brief Function for adding our new characterstic to "Our service" that we initiated in the previous tutorial. 
@@ -20,11 +23,14 @@ void ble_our_service_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context)
 static uint32_t our_char_add(ble_os_t * p_our_service)
 {
     // OUR_JOB: Step 2.A, Add a custom characteristic UUID
- 
+
+
     
     // OUR_JOB: Step 2.F Add read/write properties to our characteristic
     ble_gatts_char_md_t char_md;
     memset(&char_md, 0, sizeof(char_md));
+
+
 
 
     
@@ -38,15 +44,18 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
     // OUR_JOB: Step 2.B, Configure the attribute metadata
     ble_gatts_attr_md_t attr_md;
     memset(&attr_md, 0, sizeof(attr_md));  
+
 	
     
     
     // OUR_JOB: Step 2.G, Set read/write security levels to our characteristic
-  
+
     
     // OUR_JOB: Step 2.C, Configure the characteristic value attribute
     ble_gatts_attr_t    attr_char_value;
     memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+
 
     
     // OUR_JOB: Step 2.H, Set characteristic length in number of bytes
@@ -54,7 +63,7 @@ static uint32_t our_char_add(ble_os_t * p_our_service)
 
     // OUR_JOB: Step 2.E, Add our new characteristic to the service
 
-	
+
     return NRF_SUCCESS;
 }
 
@@ -76,7 +85,7 @@ void our_service_init(ble_os_t * p_our_service)
     APP_ERROR_CHECK(err_code);    
     
     // OUR_JOB: Step 3.B, Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
-		
+	
 
     // FROM_SERVICE_TUTORIAL: Add our service
 		err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY,
